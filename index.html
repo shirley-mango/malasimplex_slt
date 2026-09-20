@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adversarial Attacks on Audio Deepfake Detection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+
+  :root{
+    --ink: #1E2233;
+    --ink-soft: #4A5170;
+    --card: #FFFFFF;
+    --card-soft: #F3F1FF;
+    --violet: #7C6FEE;
+    --violet-dark: #5B4FD1;
+    --blue: #3E7BFA;
+    --coral: #FF9166;
+    --lilac: #E3DEFF;
+    --radius-lg: 26px;
+    --radius-md: 16px;
+    --radius-sm: 10px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin: 0;
+    background: linear-gradient(180deg, #7C6FEE 0%, #6478F2 35%, #4C86F5 65%, #3E9BF5 100%);
+    color: var(--ink);
+    font-family: 'Nunito', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .side-deco{
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 150px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  }
+  .side-deco.left{ left: 0; }
+  .side-deco.right{ right: 0; transform: scaleX(-1); }
+
+  @media (max-width: 960px){
+    .side-deco{ display: none; }
+  }
+
+  .page{
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 72px 24px 96px;
+  }
+
+  header.hero{
+    text-align: center;
+    margin-bottom: 68px;
+  }
+
+  .eyebrow-blob{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 6px 18px;
+    border-radius: 999px;
+    margin-bottom: 22px;
+    backdrop-filter: blur(6px);
+  }
+
+  h1{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 4.6vw, 2.9rem);
+    line-height: 1.15;
+    margin: 0 0 18px;
+    color: #fff;
+  }
+
+  .subtitle{
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.85);
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .authors{
+    margin-top: 26px;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .links{
+    margin-top: 22px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .pill-link{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    color: var(--violet-dark);
+    background: #fff;
+    padding: 10px 24px;
+    border-radius: 999px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .pill-link:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -8px rgba(0,0,0,0.35);
+  }
+
+  section{ margin-bottom: 72px; }
+
+  .section-intro{
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 28px;
+  }
+
+  h2{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.7rem;
+    margin: 0 0 10px;
+    color: #fff;
+  }
+
+  .section-intro p{
+    color: rgba(255,255,255,0.85);
+    margin: 0;
+  }
+
+  .panel{
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: 0 20px 45px -18px rgba(20, 20, 60, 0.35);
+  }
+
+  p{ color: var(--ink-soft); }
+
+  /* ---------- chip toggles ---------- */
+
+  .toggle-group{ margin-bottom: 22px; }
+
+  .toggle-group .toggle-label{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .chip-row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .chip{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--card-soft);
+    color: var(--ink-soft);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease, color 0.15s ease;
+    border: 2px solid transparent;
+  }
+  .chip input{
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+  }
+  .chip .swatch{
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .chip.active{ color: #fff; }
+  .chip.small{ padding: 6px 12px; font-size: 0.8rem; }
+
+  .quick-btn{
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--violet-dark);
+    background: none;
+    border: 2px solid var(--lilac);
+    border-radius: 999px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .quick-btn:hover{ background: var(--lilac); }
+
+  /* ---------- chart ---------- */
+
+  .chart-wrap{
+    position: relative;
+    height: 380px;
+    margin-top: 8px;
+  }
+
+  .l2-panel{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .l2-chip{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    background: var(--card-soft);
+    padding: 5px 10px;
+    border-radius: 999px;
+  }
+  .l2-chip .dot{
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* ---------- sample listening ---------- */
+
+  .sample-card{
+    background: var(--card-soft);
+    border-radius: var(--radius-md);
+    padding: 22px 24px;
+    margin-bottom: 20px;
+  }
+  .sample-card:last-child{ margin-bottom: 0; }
+
+  .sample-card h3{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin: 0 0 2px;
+  }
+
+  .sample-meta{
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    margin: 0 0 16px;
+  }
+
+  .audio-row{
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 9px 0;
+  }
+  .audio-row + .audio-row{ border-top: 1px solid #E4E1FA; }
+
+  .audio-label{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--violet-dark);
+  }
+
+  audio{ width: 100%; height: 36px; }
+
+  @media (max-width: 520px){
+    .audio-row{ grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  /* ---------- empty state ---------- */
+
+  .empty-state{
+    text-align: center;
+    padding: 48px 24px;
+    border: 2px dashed var(--lilac);
+    border-radius: var(--radius-md);
+  }
+  .empty-state .empty-emoji{ font-size: 2rem; margin-bottom: 12px; display: block; }
+  .empty-state p{ margin: 0; color: var(--ink-soft); }
+
+  footer{
+    text-align: center;
+    color: rgba(255,255,255,0.75);
+    font-size: 0.9rem;
+    padding-top: 24px;
+  }
+
+</style>
+</head>
+<body>
+
+  <svg class="side-deco left" viewBox="0 0 160 800" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 40 Q35 10 50 40 T80 40 T110 40" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="30" cy="150" r="6" fill="#fff"/>
+    <circle cx="55" cy="150" r="10" fill="#fff"/>
+    <circle cx="85" cy="150" r="4" fill="#fff"/>
+    <path d="M15 260 Q30 220 45 260 T75 260 T105 260 T135 260" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M25 400 L35 380 L45 420 L55 370 L65 410 L75 390 L85 400" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="40" cy="520" r="14" fill="#fff"/>
+    <circle cx="70" cy="540" r="7" fill="#fff"/>
+    <path d="M20 650 Q35 620 50 650 T80 650 T110 650" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="30" cy="740" r="5" fill="#fff"/>
+    <circle cx="60" cy="750" r="9" fill="#fff"/>
+  </svg>
+
+  <svg class="side-deco right" viewBox="0 0 160 800" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 40 Q35 10 50 40 T80 40 T110 40" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="30" cy="150" r="6" fill="#fff"/>
+    <circle cx="55" cy="150" r="10" fill="#fff"/>
+    <circle cx="85" cy="150" r="4" fill="#fff"/>
+    <path d="M15 260 Q30 220 45 260 T75 260 T105 260 T135 260" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M25 400 L35 380 L45 420 L55 370 L65 410 L75 390 L85 400" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="40" cy="520" r="14" fill="#fff"/>
+    <circle cx="70" cy="540" r="7" fill="#fff"/>
+    <path d="M20 650 Q35 620 50 650 T80 650 T110 650" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="30" cy="740" r="5" fill="#fff"/>
+    <circle cx="60" cy="750" r="9" fill="#fff"/>
+  </svg>
+
+  <div class="page">
+
+    <header class="hero">
+      <span class="eyebrow-blob">🎧 Research demo</span>
+      <h1>Malasimplex</h1>
+      <p class="subtitle">
+        Additional material
+      </p>
+      <p class="authors">Author 1, Author 2, Author 3 — Lab / Institution</p>
+      <div class="links">
+        <a class="pill-link" href="#">Paper (PDF)</a>
+      </div>
+    </header>
+
+    <!-- ============ SECTION 1 — FILTER VISUALIZATION ============ -->
+    <section id="filters">
+      <div class="section-intro">
+        <h2>Filter Visualisation</h2>
+        <p>Overlay filter curves across 10 seeds and 5 training conditions on a single plot. Toggle conditions and seeds below.</p>
+      </div>
+
+      <div class="panel">
+
+        <div class="toggle-group">
+          <span class="toggle-label">Conditions</span>
+          <div class="chip-row" id="condition-toggles">
+            <label class="chip active" data-condition="baseline" style="background:#7C8199">
+              <input type="checkbox" value="baseline" checked><span class="swatch" style="background:#fff"></span>Baseline (random)
+            </label>
+            <label class="chip active" data-condition="w2v_a28" style="background:#7C6FEE">
+              <input type="checkbox" value="w2v_a28" checked><span class="swatch" style="background:#fff"></span>W2V A28
+            </label>
+            <label class="chip active" data-condition="wavlm_a28" style="background:#3E7BFA">
+              <input type="checkbox" value="wavlm_a28" checked><span class="swatch" style="background:#fff"></span>WavLM A28
+            </label>
+            <label class="chip active" data-condition="wavlm_a29" style="background:#2A5FE0">
+              <input type="checkbox" value="wavlm_a29" checked><span class="swatch" style="background:#fff"></span>WavLM A29
+            </label>
+          </div>
+        </div>
+
+        <div class="toggle-group">
+          <span class="toggle-label">Seeds</span>
+          <div class="chip-row" id="seed-toggles">
+            <label class="chip small active"><input type="checkbox" value="42" checked>42</label>
+            <label class="chip small active"><input type="checkbox" value="43" checked>43</label>
+            <label class="chip small active"><input type="checkbox" value="44" checked>44</label>
+            <label class="chip small active"><input type="checkbox" value="45" checked>45</label>
+            <label class="chip small active"><input type="checkbox" value="46" checked>46</label>
+            <label class="chip small active"><input type="checkbox" value="47" checked>47</label>
+            <label class="chip small active"><input type="checkbox" value="48" checked>48</label>
+            <label class="chip small active"><input type="checkbox" value="49" checked>49</label>
+            <label class="chip small active"><input type="checkbox" value="50" checked>50</label>
+            <label class="chip small active"><input type="checkbox" value="51" checked>51</label>
+            <button class="quick-btn" id="seeds-all">All</button>
+            <button class="quick-btn" id="seeds-none">None</button>
+          </div>
+        </div>
+
+        <div class="l2-panel" id="l2-panel"></div>
+
+        <div class="chart-wrap">
+          <canvas id="filterChart"></canvas>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ SECTION 2 — LISTENING TO SAMPLES ============ -->
+    <section id="samples">
+      <div class="section-intro">
+        <h2>Listening to Samples</h2>
+        <p>Audio generated under each training condition, for the same input utterance.</p>
+      </div>
+
+      <div class="panel">
+
+        <div class="sample-card">
+          <h3>Example 1</h3>
+          <p class="sample-meta"> YourTTS </p>
+          <div class="audio-row"><span class="audio-label">Baseline (random)</span><audio controls><source src="assets/audio/example1_baseline.wav" type="audio/wav"></audio></div>
+          <div class="audio-row"><span class="audio-label">MS 1 FT</span><audio controls><source src="assets/audio/example1_ms1ft.wav" type="audio/wav"></audio></div>
+          <div class="audio-row"><span class="audio-label">MS 1</span><audio controls><source src="assets/audio/example1_ms1.wav" type="audio/wav"></audio></div>
+          <div class="audio-row"><span class="audio-label">MS 2</span><audio controls><source src="assets/audio/example1_ms2.wav" type="audio/wav"></audio></div>
+          <div class="audio-row"><span class="audio-label">MS 3</span><audio controls><source src="assets/audio/example1_ms3.wav" type="audio/wav"></audio></div>
+        </div>
+
+        <div class="sample-card">
+          <h3>Example 2</h3>
+          <p class="sample-meta"> XTTS </p>
+          <div class="audio-row"><span class="audio-label">Baseline (random)</span><audio controls><source src="assets/audio/example2_baseline.wav" type="audio/wav"></audio></div>
+          <div class="audio-row"><span class="audio-label">MS 1 FT</span><audio controls><source src="assets/audio/example2_ms1ft.wav" type="audio/wav"></audio></div>
+          <div class="audio-row"><span class="audio-label">MS 1</span><audio controls><source src="assets/audio/example2_ms1.wav" type="audio/wav"></audio></div>
+          <div class="audio-row"><span class="audio-label">MS 2</span><audio controls><source src="assets/audio/example2_ms2.wav" type="audio/wav"></audio></div>
+          <div class="audio-row"><span class="audio-label">MS 3</span><audio controls><source src="assets/audio/example2_ms3.wav" type="audio/wav"></audio></div>
+        </div>
+        <!-- ... add more .sample-card blocks as needed ... -->
+
+      </div>
+    </section>
+
+    <!-- ============ SECTION 3 — COMPARISON WITH OTHER METHODS ============ -->
+    <section id="comparison">
+      <div class="section-intro">
+        <h2>Comparison with Other Methods</h2>
+        <p></p>
+      </div>
+
+      <div class="panel">
+        <div class="empty-state">
+          <span class="empty-emoji">🚧</span>
+          <p>Not available yet</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Page built to accompany the paper — hosted with GitHub Pages.
+    </footer>
+
+  </div>
+
+  <script>
+    // ===================================================================
+    // Expects assets/filter_data.json with this shape (see
+    // export_filter_data.py):
+    // {
+    //   "freq": [0, 3.9, 7.8, ...],                       // shared x-axis
+    //   "conditions": {
+    //     "baseline":  { "42": {"response_db":[...], "l2_norm": 0.83}, ... },
+    //     "w2v_a28":   { "42": {...}, ... },
+    //     "wavlm_a28": { "42": {...}, ... },
+    //     "wavlm_a29": { "42": {...}, ... }
+    //   }
+    // }
+    // ===================================================================
+    var conditions = ['baseline', 'w2v_a28', 'wavlm_a28', 'wavlm_a29'];
+    var seeds = [42,43,44,45,46,47,48,49,50,51];
+    var numPoints = 2049; // rfft(4096) length — matches a placeholder fallback only
+
+    function pseudoRandomCurve(condition, seed){
+      // deterministic placeholder curve, used only if filter_data.json is missing
+      var seedNum = conditions.indexOf(condition) * 13 + seed * 7;
+      var curve = [];
+      for (var i = 0; i < numPoints; i++){
+        var v = Math.sin((i / numPoints) * Math.PI * (2 + (seedNum % 5)) + seedNum)
+              + 0.3 * Math.sin((i / numPoints) * Math.PI * (7 + (seedNum % 3)));
+        curve.push(v * 10 - 5);
+      }
+      return curve;
+    }
+
+    // Try to load real data from assets/filter_data.json. If it's not
+    // there yet, fall back to placeholder curves so the page still renders.
+    function loadFilterData(){
+      return fetch('assets/filter_data.json')
+        .then(function(res){
+          if (!res.ok) { throw new Error('not found'); }
+          return res.json();
+        })
+        .catch(function(){
+          var placeholderConditions = {};
+          conditions.forEach(function(c){
+            placeholderConditions[c] = {};
+            seeds.forEach(function(s){
+              placeholderConditions[c][s] = {
+                response_db: pseudoRandomCurve(c, s),
+                l2_norm: 0.5 + Math.random()
+              };
+            });
+          });
+          return { freq: Array.from({length: numPoints}, function(_, i){ return i; }), conditions: placeholderConditions };
+        });
+    }
+
+    // ---- color per condition, opacity varies by seed ----
+    var conditionColors = {
+      baseline:   [124, 129, 153],
+      w2v_a28:    [124, 111, 238],
+      wavlm_a28:  [ 62, 123, 250],
+      wavlm_a29:  [ 42,  95, 224]
+    };
+
+    function colorForSeed(condition, seed){
+      var rgb = conditionColors[condition];
+      var idx = seeds.indexOf(Number(seed));
+      var alpha = 0.35 + (idx / (seeds.length - 1)) * 0.65;
+      return 'rgba(' + rgb.join(',') + ',' + alpha.toFixed(2) + ')';
+    }
+
+    loadFilterData().then(function(payload){
+
+      var freq = payload.freq;
+      var conditionData = payload.conditions;
+
+      var datasets = [];
+      conditions.forEach(function(c){
+        seeds.forEach(function(s){
+          var entry = conditionData[c] && conditionData[c][s];
+          if (!entry) { return; } // skip if this condition/seed pair is missing from the JSON
+          datasets.push({
+            label: c + ' · seed ' + s,
+            data: entry.response_db,
+            l2Norm: entry.l2_norm,
+            borderColor: colorForSeed(c, s),
+            backgroundColor: 'transparent',
+            borderWidth: 1.6,
+            pointRadius: 0,
+            tension: 0.15,
+            _condition: c,
+            _seed: String(s)
+          });
+        });
+      });
+
+      var ctx = document.getElementById('filterChart').getContext('2d');
+      var filterChart = new Chart(ctx, {
+        type: 'line',
+        data: { labels: freq, datasets: datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title: function(items){ return datasets[items[0].datasetIndex].label; }
+              }
+            }
+          },
+          scales: {
+            x: {
+              type: 'linear',
+              title: { display: true, text: 'Frequency (Hz)' },
+              grid: { color: '#EFEDFC' },
+              ticks: { maxTicksLimit: 8 }
+            },
+            y: { title: { display: true, text: 'Magnitude (dB)' }, grid: { color: '#EFEDFC' } }
+          }
+        }
+      });
+
+      var conditionLabels = {
+        baseline: 'Baseline', w2v_a28: 'W2V A28', wavlm_a28: 'WavLM A28', wavlm_a29: 'WavLM A29'
+      };
+
+      function updateFilters(){
+        var activeConditions = Array.prototype.map.call(
+          document.querySelectorAll('#condition-toggles input:checked'),
+          function(i){ return i.value; }
+        );
+        var activeSeeds = Array.prototype.map.call(
+          document.querySelectorAll('#seed-toggles input:checked'),
+          function(i){ return i.value; }
+        );
+
+        var l2Panel = document.getElementById('l2-panel');
+        l2Panel.innerHTML = '';
+
+        filterChart.data.datasets.forEach(function(ds){
+          var visible = activeConditions.indexOf(ds._condition) !== -1 && activeSeeds.indexOf(ds._seed) !== -1;
+          ds.hidden = !visible;
+          if (visible){
+            var chip = document.createElement('span');
+            chip.className = 'l2-chip';
+            chip.innerHTML = '<span class="dot" style="background:' + ds.borderColor + '"></span>' +
+              conditionLabels[ds._condition] + ' · seed ' + ds._seed + ' — L2 ' + ds.l2Norm.toFixed(3);
+            l2Panel.appendChild(chip);
+          }
+        });
+
+        filterChart.update();
+      }
+
+      function refreshChipStyle(input){
+        var chip = input.closest('.chip');
+        if (input.checked){ chip.classList.add('active'); }
+        else { chip.classList.remove('active'); }
+      }
+
+      document.querySelectorAll('#condition-toggles input, #seed-toggles input').forEach(function(input){
+        input.addEventListener('change', function(){
+          refreshChipStyle(input);
+          updateFilters();
+        });
+      });
+
+      document.getElementById('seeds-all').addEventListener('click', function(){
+        document.querySelectorAll('#seed-toggles input').forEach(function(input){
+          input.checked = true;
+          refreshChipStyle(input);
+        });
+        updateFilters();
+      });
+
+      document.getElementById('seeds-none').addEventListener('click', function(){
+        document.querySelectorAll('#seed-toggles input').forEach(function(input){
+          input.checked = false;
+          refreshChipStyle(input);
+        });
+        updateFilters();
+      });
+
+      updateFilters();
+
+    });
+  </script>
+
+</body>
+</html>
