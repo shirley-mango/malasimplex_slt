@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
 
   :root{
@@ -351,7 +351,7 @@
 
     <header class="hero">
       <span class="eyebrow-blob">🎧 Research demo</span>
-      <h1>Malasimplex</h1>
+      <h1>Title of Your Adversarial Method</h1>
       <p class="subtitle">
         Additional material
       </p>
@@ -364,7 +364,7 @@
     <!-- ============ SECTION 1 — FILTER VISUALIZATION ============ -->
     <section id="filters">
       <div class="section-intro">
-        <h2>Filter Visualisation</h2>
+        <h2>Filter Visualization</h2>
         <p>Overlay filter curves across 10 seeds and 5 training conditions on a single plot. Toggle conditions and seeds below.</p>
       </div>
 
@@ -426,7 +426,7 @@
 
         <div class="sample-card">
           <h3>Example 1</h3>
-          <p class="sample-meta"> YourTTS </p>
+          <p class="sample-meta"></p>
           <div class="audio-row"><span class="audio-label">Baseline (random)</span><audio controls><source src="assets/audio/example1_baseline.wav" type="audio/wav"></audio></div>
           <div class="audio-row"><span class="audio-label">MS 1 FT</span><audio controls><source src="assets/audio/example1_ms1ft.wav" type="audio/wav"></audio></div>
           <div class="audio-row"><span class="audio-label">MS 1</span><audio controls><source src="assets/audio/example1_ms1.wav" type="audio/wav"></audio></div>
@@ -436,7 +436,7 @@
 
         <div class="sample-card">
           <h3>Example 2</h3>
-          <p class="sample-meta"> XTTS </p>
+          <p class="sample-meta"></p>
           <div class="audio-row"><span class="audio-label">Baseline (random)</span><audio controls><source src="assets/audio/example2_baseline.wav" type="audio/wav"></audio></div>
           <div class="audio-row"><span class="audio-label">MS 1 FT</span><audio controls><source src="assets/audio/example2_ms1ft.wav" type="audio/wav"></audio></div>
           <div class="audio-row"><span class="audio-label">MS 1</span><audio controls><source src="assets/audio/example2_ms1.wav" type="audio/wav"></audio></div>
@@ -452,7 +452,6 @@
     <section id="comparison">
       <div class="section-intro">
         <h2>Comparison with Other Methods</h2>
-        <p></p>
       </div>
 
       <div class="panel">
@@ -653,6 +652,10 @@
 
       updateFilters();
 
+    }).catch(function(err){
+      console.error(err);
+      var wrap = document.querySelector('.chart-wrap');
+      wrap.innerHTML = '<p style="color:#C0392B;">Something went wrong loading the chart: ' + err.message + '. Open the browser console (F12) for details.</p>';
     });
   </script>
 
