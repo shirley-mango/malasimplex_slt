@@ -262,6 +262,39 @@
   }
   .sample-card:last-child{ margin-bottom: 0; }
 
+    .collapsible{
+    margin-bottom: 24px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .collapsible:last-child{ margin-bottom: 0; }
+
+  .collapsible summary{
+    cursor: pointer;
+    list-style: none;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 16px 20px;
+    background: var(--lilac);
+    color: var(--violet-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .collapsible summary::-webkit-details-marker{ display: none; }
+  .collapsible summary::before{
+    content: '▶';
+    font-size: 0.7rem;
+    transition: transform 0.15s ease;
+  }
+  .collapsible[open] summary::before{
+    transform: rotate(90deg);
+  }
+  .collapsible-body{
+    padding: 20px;
+  }
+
   .sample-card h3{
     font-family: 'Baloo 2', sans-serif;
     font-weight: 600;
@@ -427,26 +460,43 @@
 
       <div class="panel">
 
-        <div class="sample-card">
-          <h3>Example 1</h3>
-          <p class="sample-meta"></p>
-          <div class="audio-row"><span class="audio-label">Baseline (random)</span><audio controls><source src="assets/audio/example1_baseline.wav" type="audio/wav"></audio></div>
-          <div class="audio-row"><span class="audio-label">MS 1 FT</span><audio controls><source src="assets/audio/example1_ms1ft.wav" type="audio/wav"></audio></div>
-          <div class="audio-row"><span class="audio-label">MS 1</span><audio controls><source src="assets/audio/example1_ms1.wav" type="audio/wav"></audio></div>
-          <div class="audio-row"><span class="audio-label">MS 2</span><audio controls><source src="assets/audio/example1_ms2.wav" type="audio/wav"></audio></div>
-          <div class="audio-row"><span class="audio-label">MS 3</span><audio controls><source src="assets/audio/example1_ms3.wav" type="audio/wav"></audio></div>
-        </div>
+        <details class="collapsible" open>
+          <summary>YourTTS</summary>
+          <div class="collapsible-body">
 
-        <div class="sample-card">
-          <h3>Example 2</h3>
-          <p class="sample-meta"></p>
-          <div class="audio-row"><span class="audio-label">Baseline (random)</span><audio controls><source src="assets/audio/example2_baseline.wav" type="audio/wav"></audio></div>
-          <div class="audio-row"><span class="audio-label">MS 1 FT</span><audio controls><source src="assets/audio/example2_ms1ft.wav" type="audio/wav"></audio></div>
-          <div class="audio-row"><span class="audio-label">MS 1</span><audio controls><source src="assets/audio/example2_ms1.wav" type="audio/wav"></audio></div>
-          <div class="audio-row"><span class="audio-label">MS 2</span><audio controls><source src="assets/audio/example2_ms2.wav" type="audio/wav"></audio></div>
-          <div class="audio-row"><span class="audio-label">MS 3</span><audio controls><source src="assets/audio/example2_ms3.wav" type="audio/wav"></audio></div>
-        </div>
-        <!-- ... add more .sample-card blocks as needed ... -->
+            <div class="sample-card">
+              <h3>Example 1</h3>
+              <p class="sample-meta"></p>
+              <div class="audio-row"><span class="audio-label">Baseline (random)</span><audio controls><source src="assets/audio/yourtts_example1_baseline.wav" type="audio/wav"></audio></div>
+              <div class="audio-row"><span class="audio-label">MS 1</span><audio controls><source src="assets/audio/yourtts_example1_ms1.wav" type="audio/wav"></audio></div>
+              <div class="audio-row"><span class="audio-label">MS 1 FT</span><audio controls><source src="assets/audio/yourtts_example1_ms1ft.wav" type="audio/wav"></audio></div>
+              <div class="audio-row"><span class="audio-label">MS 2</span><audio controls><source src="assets/audio/yourtts_example1_ms2.wav" type="audio/wav"></audio></div>
+              <div class="audio-row"><span class="audio-label">MS 3</span><audio controls><source src="assets/audio/yourtts_example1_ms3.wav" type="audio/wav"></audio></div>
+            </div>
+
+            <!-- duplique ce bloc .sample-card pour Example 2, 3, 4, 5 (change juste le numéro et les chemins des fichiers) -->
+
+          </div>
+        </details>
+
+        <details class="collapsible">
+          <summary>XTTS</summary>
+          <div class="collapsible-body">
+
+            <div class="sample-card">
+              <h3>Example 1</h3>
+              <p class="sample-meta"></p>
+              <div class="audio-row"><span class="audio-label">Baseline (random)</span><audio controls><source src="assets/audio/xtts_example1_baseline.wav" type="audio/wav"></audio></div>
+              <div class="audio-row"><span class="audio-label">MS 1</span><audio controls><source src="assets/audio/xtts_example1_ms1.wav" type="audio/wav"></audio></div>
+              <div class="audio-row"><span class="audio-label">MS 1 FT</span><audio controls><source src="assets/audio/xtts_example1_ms1ft.wav" type="audio/wav"></audio></div>
+              <div class="audio-row"><span class="audio-label">MS 2</span><audio controls><source src="assets/audio/xtts_example1_ms2.wav" type="audio/wav"></audio></div>
+              <div class="audio-row"><span class="audio-label">MS 3</span><audio controls><source src="assets/audio/xtts_example1_ms3.wav" type="audio/wav"></audio></div>
+            </div>
+
+            <!-- duplique ce bloc .sample-card pour Example 2, 3, 4, 5 -->
+
+          </div>
+        </details>
 
       </div>
     </section>
