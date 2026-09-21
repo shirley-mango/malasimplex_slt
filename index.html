@@ -687,7 +687,7 @@
     //   }
     // }
     // ===================================================================
-    var conditions = ['baseline', 'w2v_a28', 'wavlm_a28', 'wavlm_a29'];
+    var conditions = ['baseline', 'w2v_a28', 'w2v_a28_ft', 'wavlm_a28', 'wavlm_a29'];
     var seeds = [42,43,44,45,46,47,48,49,50,51];
     var numPoints = 2049; // rfft(4096) length — matches a placeholder fallback only
 
@@ -796,7 +796,7 @@
       });
 
       var conditionLabels = {
-        baseline: 'Baseline', w2v_a28: 'W2V A28', wavlm_a28: 'WavLM A28', wavlm_a29: 'WavLM A29'
+        baseline: 'Baseline', w2v_a28: 'W2V A28', w2v_a28_ft : 'W2V A28 FT', wavlm_a28: 'WavLM A28', wavlm_a29: 'WavLM A29'
       };
 
       function updateFilters(){
