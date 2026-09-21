@@ -525,11 +525,12 @@
     }
 
     // ---- color per condition, opacity varies by seed ----
-    var conditionColors = {
-      baseline:   [124, 129, 153],
-      w2v_a28:    [124, 111, 238],
-      wavlm_a28:  [ 62, 123, 250],
-      wavlm_a29:  [ 42,  95, 224]
+   var conditionColors = {
+      baseline:    [118, 118, 118],  // gray
+      w2v_a28:     [  0, 114, 178],  // blue
+      w2v_a28_ft:  [213,  94,   0],  // vermillion
+      wavlm_a28:   [  0, 158, 115],  // bluish green
+      wavlm_a29:   [204, 121, 167]   // reddish purple
     };
 
     function colorForSeed(condition, seed){
