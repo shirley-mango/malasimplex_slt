@@ -324,6 +324,25 @@
     color: var(--violet-dark);
   }
 
+    .audio-variants{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .audio-variant{
+    flex: 1;
+    min-width: 180px;
+  }
+
+  .variant-tag{
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    margin-bottom: 3px;
+  }
+
   audio{ width: 100%; height: 36px; }
 
   @media (max-width: 520px){
@@ -456,6 +475,7 @@
       <div class="section-intro">
         <h2>Listening to Samples</h2>
         <p>Audio samples from each TTS, with the different filters applied. </p>
+        <p> For each condition, two seeds are provided for listening: the one achieving the lowest EER and the one achieving the highest, on average across evaluation sets.</p>
       </div>
 
       <div class="panel">
@@ -467,11 +487,77 @@
             <div class="sample-card">
               <h3>Example 1</h3>
               <p class="sample-meta"></p>
-              <div class="audio-row"><span class="audio-label">Baseline (random)</span><audio controls><source src="assets/audio/yourtts_example1_baseline.wav" type="audio/wav"></audio></div>
-              <div class="audio-row"><span class="audio-label">MS 1</span><audio controls><source src="assets/audio/yourtts_example1_ms1.wav" type="audio/wav"></audio></div>
-              <div class="audio-row"><span class="audio-label">MS 1 FT</span><audio controls><source src="assets/audio/yourtts_example1_ms1ft.wav" type="audio/wav"></audio></div>
-              <div class="audio-row"><span class="audio-label">MS 2</span><audio controls><source src="assets/audio/yourtts_example1_ms2.wav" type="audio/wav"></audio></div>
-              <div class="audio-row"><span class="audio-label">MS 3</span><audio controls><source src="assets/audio/yourtts_example1_ms3.wav" type="audio/wav"></audio></div>
+
+              <div class="audio-row">
+                <span class="audio-label">Baseline (random)</span>
+                <div class="audio-variants">
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed a</span>
+                    <audio controls><source src="assets/audio/yourtts_example1_baseline_seeda.wav" type="audio/wav"></audio>
+                  </div>
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed b</span>
+                    <audio controls><source src="assets/audio/yourtts_example1_baseline_seedb.wav" type="audio/wav"></audio>
+                  </div>
+                </div>
+              </div>
+
+              <div class="audio-row">
+                <span class="audio-label">MS 1</span>
+                <div class="audio-variants">
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed a</span>
+                    <audio controls><source src="assets/audio/yourtts_example1_ms1_seeda.wav" type="audio/wav"></audio>
+                  </div>
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed b</span>
+                    <audio controls><source src="assets/audio/yourtts_example1_ms1_seedb.wav" type="audio/wav"></audio>
+                  </div>
+                </div>
+              </div>
+
+              <div class="audio-row">
+                <span class="audio-label">MS 1 FT</span>
+                <div class="audio-variants">
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed a</span>
+                    <audio controls><source src="assets/audio/yourtts_example1_ms1ft_seeda.wav" type="audio/wav"></audio>
+                  </div>
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed b</span>
+                    <audio controls><source src="assets/audio/yourtts_example1_ms1ft_seedb.wav" type="audio/wav"></audio>
+                  </div>
+                </div>
+              </div>
+
+              <div class="audio-row">
+                <span class="audio-label">MS 2</span>
+                <div class="audio-variants">
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed a</span>
+                    <audio controls><source src="assets/audio/yourtts_example1_ms2_seed44.wav" type="audio/wav"></audio>
+                  </div>
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed b</span>
+                    <audio controls><source src="assets/audio/yourtts_example1_ms2_seed48.wav" type="audio/wav"></audio>
+                  </div>
+                </div>
+              </div>
+
+              <div class="audio-row">
+                <span class="audio-label">MS 3</span>
+                <div class="audio-variants">
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed a</span>
+                    <audio controls><source src="assets/audio/yourtts_example1_ms3_seeda.wav" type="audio/wav"></audio>
+                  </div>
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed b</span>
+                    <audio controls><source src="assets/audio/yourtts_example1_ms3_seedb.wav" type="audio/wav"></audio>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
             <!-- duplique ce bloc .sample-card pour Example 2, 3, 4, 5 (change juste le numéro et les chemins des fichiers) -->
@@ -486,11 +572,77 @@
             <div class="sample-card">
               <h3>Example 1</h3>
               <p class="sample-meta"></p>
-              <div class="audio-row"><span class="audio-label">Baseline (random)</span><audio controls><source src="assets/audio/xtts_example1_baseline.wav" type="audio/wav"></audio></div>
-              <div class="audio-row"><span class="audio-label">MS 1</span><audio controls><source src="assets/audio/xtts_example1_ms1.wav" type="audio/wav"></audio></div>
-              <div class="audio-row"><span class="audio-label">MS 1 FT</span><audio controls><source src="assets/audio/xtts_example1_ms1ft.wav" type="audio/wav"></audio></div>
-              <div class="audio-row"><span class="audio-label">MS 2</span><audio controls><source src="assets/audio/xtts_example1_ms2.wav" type="audio/wav"></audio></div>
-              <div class="audio-row"><span class="audio-label">MS 3</span><audio controls><source src="assets/audio/xtts_example1_ms3.wav" type="audio/wav"></audio></div>
+
+              <div class="audio-row">
+                <span class="audio-label">Baseline (random)</span>
+                <div class="audio-variants">
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed a</span>
+                    <audio controls><source src="assets/audio/xtts_example1_baseline_seeda.wav" type="audio/wav"></audio>
+                  </div>
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed b</span>
+                    <audio controls><source src="assets/audio/xtts_example1_baseline_seedb.wav" type="audio/wav"></audio>
+                  </div>
+                </div>
+              </div>
+
+              <div class="audio-row">
+                <span class="audio-label">MS 1</span>
+                <div class="audio-variants">
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed a</span>
+                    <audio controls><source src="assets/audio/xtts_example1_ms1_seeda.wav" type="audio/wav"></audio>
+                  </div>
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed b</span>
+                    <audio controls><source src="assets/audio/xtts_example1_ms1_seedb.wav" type="audio/wav"></audio>
+                  </div>
+                </div>
+              </div>
+
+              <div class="audio-row">
+                <span class="audio-label">MS 1 FT</span>
+                <div class="audio-variants">
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed a</span>
+                    <audio controls><source src="assets/audio/xtts_example1_ms1ft_seeda.wav" type="audio/wav"></audio>
+                  </div>
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed b</span>
+                    <audio controls><source src="assets/audio/xtts_example1_ms1ft_seedb.wav" type="audio/wav"></audio>
+                  </div>
+                </div>
+              </div>
+
+              <div class="audio-row">
+                <span class="audio-label">MS 2</span>
+                <div class="audio-variants">
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed a</span>
+                    <audio controls><source src="assets/audio/xtts_example1_ms2_seeda.wav" type="audio/wav"></audio>
+                  </div>
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed b</span>
+                    <audio controls><source src="assets/audio/xtts_example1_ms2_seedb.wav" type="audio/wav"></audio>
+                  </div>
+                </div>
+              </div>
+
+              <div class="audio-row">
+                <span class="audio-label">MS 3</span>
+                <div class="audio-variants">
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed a</span>
+                    <audio controls><source src="assets/audio/xtts_example1_ms3_seeda.wav" type="audio/wav"></audio>
+                  </div>
+                  <div class="audio-variant">
+                    <span class="variant-tag">Seed b</span>
+                    <audio controls><source src="assets/audio/xtts_example1_ms3_seedb.wav" type="audio/wav"></audio>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
             <!-- duplique ce bloc .sample-card pour Example 2, 3, 4, 5 -->
